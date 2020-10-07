@@ -1,23 +1,36 @@
 version: '3'
 
 services: 
-    db:
+    mongo:
         image: mongo
-        volumes: 
-            - ./db:/docker-entrypoint-initdb.d/
-        environment: 
-            - MONGO_INITDB_ROOT_USERNAME=root
-            - MONGO_INITDB_ROOT_PASSWORD=root
-            - MONGO_INITDB_DATABASE=shop
-        ports: 
-            - 27017:27017
+        ports:
+        - 27017:27017
+
+    mongo-express:
+        image: mongo-express
+        depends_on: 
+        - mongo
+        ports:
+        - 8081:8081
+
+    # conteneur avec mongo qui va lancer un import de la bdd vers le conteneur mongo
+    # Nous ne pouvons pas utiliser le conteneur mongo 
+    # car la BDD met plus de temps à se lancer que la commande à démarrer.
+    mongo-seed: 
+        image: mongo
+        container_name: mongo-seed
+        depends_on: 
+        - mongo
+        volumes:
+        - ./bd/seeds:/seeds
+        command: 'bash -c "mongoimport --host mongo:27017 --db shop --collection users --type json --file /seeds/users.json --drop && mongoimport --host mongo:27017 --db shop --collection products --type json --file /seeds/products.json --drop"'
 
     back:
         build: ./shopping/
         ports: 
             - 3000:3000
         depends_on:
-            - db
+            - mongo
 
     # front:
     #     build: ./shopping-front/
