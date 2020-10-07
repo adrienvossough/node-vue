@@ -12,10 +12,12 @@ services:
         ports: 
             - 27017:27017
 
-    # back:
-    #     build: ./shopping/
-    #     ports: 
-    #         - 3000:3000
+    back:
+        build: ./shopping/
+        ports: 
+            - 3000:3000
+        depends_on:
+            - db
 
     # front:
     #     build: ./shopping-front/
