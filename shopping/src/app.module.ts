@@ -6,7 +6,7 @@ import { OrderModule } from './order/order.module';
 
 @Module({
   imports: [
-    MongooseModule.forRoot('mongodb://enzo:1234@192.168.99.100/shop'),
+    MongooseModule.forRoot('mongodb://192.168.99.100/shop'),
     UserModule,
     ProductModule,
     OrderModule],
