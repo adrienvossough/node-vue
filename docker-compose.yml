@@ -22,7 +22,7 @@ services:
         depends_on: 
         - mongo
         volumes:
-        - ./bd/seeds:/seeds
+        - ./db/seeds:/seeds
         command: 'bash -c "mongoimport --host mongo:27017 --db shop --collection users --type json --file /seeds/users.json --drop && mongoimport --host mongo:27017 --db shop --collection products --type json --file /seeds/products.json --drop"'
 
     back:
