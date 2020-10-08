@@ -1,4 +1,4 @@
-import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { Prop, Schema, SchemaFactory, raw } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 
 @Schema({ collection: 'orders' })
@@ -6,8 +6,11 @@ export class Order {
     @Prop()
     userId: string
 
-    @Prop()
-    productsId: string[]
+    @Prop(raw({
+        productId: { type: String },
+        quantity: { type: String },
+    }))
+    products: Record<string, any>[]
 }
 
 export type OrderDocument = Order & Document

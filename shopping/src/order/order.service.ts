@@ -23,7 +23,7 @@ export class OrderService {
         const orders = await this.findAll()
         orders.forEach(async order => {
             const user = await this.userService.findById(order.userId)
-            const products = await Promise.all(order.productsId.map(async id => await this.productService.findById(id)))
+            const products = await Promise.all(order.products.map(async rec => await this.productService.findById(rec.productId)))
             result.push(new OrderDtoDetail(order._id, user, products))
         })
         return result
@@ -36,7 +36,7 @@ export class OrderService {
     async findByIdDetailed(id: string): Promise<OrderDtoDetail> {
         const order = await this.findById(id)
         const user = await this.userService.findById(order.userId)
-        const products = await Promise.all(order.productsId.map(async id => await this.productService.findById(id)))
+        const products = await Promise.all(order.products.map(async rec => await this.productService.findById(rec.productId)))
         return new OrderDtoDetail(order._id, user, products)
     }
 

@@ -11,9 +11,6 @@ export class Product {
 
     @Prop()
     price: number
-
-    @Prop()
-    quantity: number
 }
 
 export type ProductDocument = Product & Document
