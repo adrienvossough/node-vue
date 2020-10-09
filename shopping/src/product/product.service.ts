@@ -7,19 +7,19 @@ import { Model } from 'mongoose'
 export class ProductService {
     constructor(@InjectModel(Product.name) private productModel: Model<ProductDocument>) { }
 
-    async createProduct(product: Product): Promise<Product> {
+    async createProduct(product: Product): Promise<ProductDocument> {
         return new this.productModel(product).save()
     }
 
-    async findAll(): Promise<Product[]> {
+    async findAll(): Promise<ProductDocument[]> {
         return this.productModel.find()
     }
 
-    async findById(id: string): Promise<Product> {
+    async findById(id: string): Promise<ProductDocument> {
         return this.productModel.findById(id)
     }
 
-    async findByName(name: string): Promise<Product[]> {
+    async findByName(name: string): Promise<ProductDocument[]> {
         return this.productModel.find({
             name: {
                 $regex: "/.*(" + name + ").*/"
@@ -27,7 +27,7 @@ export class ProductService {
         })
     }
 
-    async updateProduct(id: string, newProduct: ProductDocument): Promise<Product> {
+    async updateProduct(id: string, newProduct: ProductDocument): Promise<ProductDocument> {
         return (await this.productModel.findById(id)).updateOne(newProduct)
     }
 

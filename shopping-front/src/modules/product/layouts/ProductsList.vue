@@ -4,14 +4,13 @@
       v-for="p in products"
       :key="p.id"
       :product="p"
-      :addToCart="actAddProduct"
+      :addToCart="addProduct"
     />
   </div>
 </template>
 
 <script>
-// import { mapActions } from "vuex";
-// import Component from "vue-class-Component";
+import { mapActions } from "vuex";
 import ProductCard from "../../../components/ProductCard";
 export default {
   name: "ProductsList",
@@ -20,7 +19,9 @@ export default {
     products: Array,
   },
   methods: {
-    // ...mapActions("cart", ["actAddProduct"]),
+    ...mapActions({
+      addProduct: "cart/actAddToCart",
+    }),
   },
 };
 </script>

@@ -32,7 +32,7 @@ services:
         depends_on:
             - mongo
 
-    # front:
-    #     build: ./shopping-front/
-    #     ports: 
-    #         - 80:80
+    front:
+        build: ./shopping-front/
+        ports: 
+            - 80:80

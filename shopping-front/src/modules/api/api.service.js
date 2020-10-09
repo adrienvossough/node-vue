@@ -8,7 +8,7 @@ class ApiService {
     }
 
     getAll = async () => {
-        return fetch(`${this.protocol}://${this.host}:${this.port}/api/${this.endpoint}`).then(resp => resp.json()).then(json => json.map(elem => new this.T(elem)))
+        return fetch(`${this.protocol}://${this.host}:${this.port}/${this.endpoint}`).then(resp => resp.json()).then(json => json.map(elem => new this.T(elem)))
     }
 }
 

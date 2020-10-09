@@ -1,17 +1,14 @@
 {
-    "_id": "1",
     "name": "Prod 1",
     "desc": "Prod 1",
     "price": 1
 }
 {
-    "_id": "2",
     "name": "Prod 2",
     "desc": "Prod 2",
     "price": 2
 }
 {
-    "_id": "3",
     "name": "Prod 3",
     "desc": "Prod 3",
     "price": 3

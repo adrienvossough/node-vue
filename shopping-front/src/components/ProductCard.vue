@@ -15,15 +15,21 @@
 </template>
 
 <script>
+import { EventBus } from "@/components/event-bus";
 export default {
   name: "ProductCard",
   props: {
     product: Object,
     addToCart: Function,
   },
+  methods: {
+    eventEmit: () => {
+      EventBus.$emit("le-nom-de-mon-event", "ma valeur");
+    },
+  },
   computed: {
-    add: (product) => {
-      this.addToCart(product);
+    add: () => {
+      this.addToCart(this.product._id);
     },
   },
 };

@@ -7,17 +7,24 @@
 
 <script>
 import ProductsList from "./layouts/ProductsList.vue";
-// import ProductService from "./services/products.service";
+import ProductService from "./services/product.service";
 export default {
   name: "Products",
   components: { ProductsList },
   data() {
     return {
       products: [],
+      prodSub: null,
     };
   },
   mounted() {
-    // ProductService.getProducts().then((prods) => (this.products = prods));
+    this.prodSub = ProductService.productsObs.subscribe(
+      (products) => (this.products = products)
+    );
+    ProductService.getProducts();
+  },
+  destroyed() {
+    this.prodSub.unsubscribe();
   },
 };
 </script>
