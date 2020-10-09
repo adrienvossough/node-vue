@@ -1,10 +1,11 @@
-import { Body, Controller, Delete, Get, Param, Post, Put } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Inject, Param, Post, Put, NotFoundException } from '@nestjs/common';
 import { Product, ProductDocument } from './product.schema';
-import { ProductService } from './product.service';
+import { IProductService } from './interfaces/Iproduct.service';
 
 @Controller('product')
 export class ProductController {
-    constructor(private productService: ProductService) { }
+    // voir le module. Nous passons par un label et Interface pour ne pas dépendre de l'implémentation
+    constructor(@Inject('IProductService') private productService: IProductService) { }
 
     @Post()
     async create(@Body() product: Product) {
@@ -18,7 +19,13 @@ export class ProductController {
 
     @Get(':id')
     async findById(@Param() param) {
-        return this.productService.findById(param.id)
+        const productDocument = await this.productService.findById(param.id)
+
+        if(!productDocument) {
+            throw new NotFoundException('Pas de produit avec cet ID');
+        }
+        
+        return productDocument;
     }
 
     @Get('name/:name')

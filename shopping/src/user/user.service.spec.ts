@@ -45,6 +45,4 @@ describe('UserService', () => {
       console.log(user)
     })
   });
-
-
 })

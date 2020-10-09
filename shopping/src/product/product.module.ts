@@ -5,9 +5,15 @@ import { ProductService } from './product.service';
 import { ProductController } from './product.controller';
 
 @Module({
-  imports: [MongooseModule.forFeature([{ name: Product.name, schema: ProductSchema }])],
-  providers: [ProductService],
+  imports: [MongooseModule.forFeature([{ name: "ProductModel", schema: ProductSchema }])],
+  providers: [
+    {
+      provide: 'IProductService',
+      useClass: ProductService
+    },
+    
+  ],
   controllers: [ProductController],
-  exports: [MongooseModule.forFeature([{ name: Product.name, schema: ProductSchema }])]
+  exports: [MongooseModule.forFeature([{ name: "ProductModel", schema: ProductSchema }])]
 })
 export class ProductModule { }

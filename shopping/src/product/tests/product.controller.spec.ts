@@ -1,16 +1,19 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { User, UserDocument } from './user.schema';
-import { UserService } from 'src/user/user.service';
-import { UserController } from './user.controller';
+import { ProductController } from '../product.controller';
+import { ProductService } from '../product.service';
+import { Product, ProductDocument, ProductSchema } from '../product.schema';
+import { getModelToken, MongooseModule, Prop } from '@nestjs/mongoose';
+import mockingoose from 'mockingoose';
+import { ProductMock } from './mock/ProductMock';
 
 /** 
  * Ce sont des tests d'intégration, nous vérifions que le controleur fonctionne
  * avec son service
  */
 
-describe('Test Integration de UserController', () => {
-  let controller: UserController;
-  let userService: UserService;
+describe('Test Integration de ProductController', () => {
+  let controller: ProductController;
+  let productService: ProductService;
 
   /**
    * - beforeAll est lancé une fois avant le lancement des test.
@@ -24,14 +27,32 @@ describe('Test Integration de UserController', () => {
    * Il s'assure que le module est créé.
    */
   beforeAll(async () => {
+    // Fabrication d'un Mock du model Mongoose
+    let productMock = new ProductMock();
+
+    // Fabrique un module "light", évite de recréer toute l'application Nest
+    // nous choisissons que ce dont on a besoin
+    // il est possible d'importer un module déjà existant
     const module: TestingModule = await Test.createTestingModule({
-      controllers: [UserController],
-      providers: [UserService]
+      controllers: [ProductController],
+      providers: [
+        {
+          provide: 'IProductService',
+          useClass: ProductService
+        },
+        {
+          provide: getModelToken("ProductModel"),
+          // nous remplaçons ProductModel par un Mock pour ne pas se connecter à la BDD
+          useValue: () => { productMock }, 
+        }
+      ]
     }).compile();
 
-    controller = module.get<UserController>(UserController);
-    userService = module.get<UserService>(UserService);
+    // nous récupérons les objets fabriqués par le module
+    controller = module.get<ProductController>(ProductController);
+    productService = module.get<ProductService>("IProductService");
   });
+
 
   /**
    * - afterEach est lancé après chacun des tests
@@ -42,6 +63,10 @@ describe('Test Integration de UserController', () => {
     jest.resetAllMocks();
   });
 
+  afterAll(() => {
+
+  });
+
   it('should be defined', () => {
     expect(controller).toBeDefined();
   });
@@ -50,12 +75,34 @@ describe('Test Integration de UserController', () => {
    * J'utilise une partie des mots en anglais car c'est presque une convention
    * On pourrait mettre "doit retourner". Il faut le définir en début de projet
    */
-  it("should return un objet User", async () => {
-    const expectedResult = new User();
+  it("should return un produit", async () => {
+    // // le résultat que nous attendons est un produit.
+    // let product = new Product();
+
+    // const expectedResult = 
+    // const mockNumberToSatisfyParameters = 0;
+
+    // jest.spyOn(productService, "findById").mockResolvedValue(expectedResult);
+    // // nous testons le résultat du controleur avec celui attendu
+    // expect(await controller.findById(mockNumberToSatisfyParameters)).toBe(expectedResult);
+  });
+
+  /**
+   * Ici, nous testons le cas où le produit n'est pas trouvé
+   */
+  it("should throw NotFoundException si le produit n'est pas trouvé", async (done) => {
+    const expectedResult = undefined;
     const mockNumberToSatisfyParameters = 0;
 
-    jest.spyOn(userService, "findById").mockResolvedValue(expectedResult);
-    expect(await controller.findById(mockNumberToSatisfyParameters)).toBe(expectedResult);
+    jest.spyOn(productService, "findById").mockResolvedValue(expectedResult);
+
+    await controller.findById(mockNumberToSatisfyParameters)
+     .then(() => done.fail("Le controlClient controller should return NotFoundException error of 404 but did not"))
+     .catch((error) => {
+       expect(error.status).toBe(404);
+       expect(error.message).toMatchObject({error: "Not Found", statusCode: 404});
+       done();
+     });
   });
 });
 
